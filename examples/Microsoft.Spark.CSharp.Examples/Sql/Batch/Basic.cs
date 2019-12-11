@@ -24,7 +24,37 @@ namespace Microsoft.Spark.Examples.Sql.Batch
                 Environment.Exit(1);
             }
 
-            SparkSession spark = SparkSession
+            var spark = SparkSession.Builder().GetOrCreate();
+            var df = spark.Range(0, 5);
+
+            /*Func<Column, Column> udfReturnRowTypeTest = UdfReturnRowType<int, object[]>(
+                r => new object[] { r + 100 },
+                new StructType(new[]
+                {
+                    new StructField("id", new IntegerType())
+                }));*/
+            var schema = new StructType(new[]
+                {
+                    new StructField("id", new IntegerType())
+                });
+            Func<Column, Column> udfReturnRowTypeTest2 = Udf<int>(
+                r => new GenericRow(new object[] { r + 100 }), schema);
+
+
+            Func<Column, Column> udfReturnRowTypeTest3 = Udf<int, int[]>(
+                r => new int[]{ r, r });
+
+            Console.WriteLine("This is breaking test method-------------------------------------------------------");
+
+            var udfDf = df.Select(udfReturnRowTypeTest2(df["id"]).As("udf_col"));
+
+            udfDf.PrintSchema();
+            Console.WriteLine("This is after printing schema --------------------------------------");
+            udfDf.Show();
+            // udfDf.Select("udf_col.*").Show();
+            udfDf.Select(udfDf["udf_col.col1"], udfDf["udf_col.col2"]).Show();
+
+            /*SparkSession spark = SparkSession
                 .Builder()
                 .AppName(".NET Spark SQL basic example")
                 .Config("spark.some.config.option", "some-value")
@@ -77,8 +107,8 @@ namespace Microsoft.Spark.Examples.Sql.Batch
             sqlDf.Show();
 
             // Using UDF via data frames.
-            Func<Column, Column, Column> addition = Udf<int?, string, string>(
-                (age, name) => name + " is " + (age.HasValue ? age.Value + 10 : 0));
+            Func<Column, Column, Column> addition =
+                Udf<string, Row> ((str) => new GenericRow(new object[] {1}));
             df.Select(addition(df["age"], df["name"])).Show();
 
             // Chaining example:
@@ -109,7 +139,7 @@ namespace Microsoft.Spark.Examples.Sql.Batch
             DataFrame joinedDf3 = df.Join(df, df["name"] == df["name"], "outer");
             joinedDf3.Show();
 
-            spark.Stop();
+            spark.Stop();*/
         }
     }
 }

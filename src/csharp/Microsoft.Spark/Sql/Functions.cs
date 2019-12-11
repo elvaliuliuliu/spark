@@ -8,6 +8,7 @@ using Apache.Arrow;
 using Microsoft.Spark.Interop;
 using Microsoft.Spark.Interop.Ipc;
 using Microsoft.Spark.Sql.Expressions;
+using Microsoft.Spark.Sql.Types;
 using Microsoft.Spark.Utils;
 
 namespace Microsoft.Spark.Sql
@@ -3638,6 +3639,31 @@ namespace Microsoft.Spark.Sql
             return CreateUdf<TResult>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf)).Apply1;
         }
 
+        // This is the change I made!!!
+        /// <summary>Creates a UDF from the specified delegate.</summary>
+        /// <typeparam name="T">Specifies the type of the first argument to the UDF.</typeparam>
+        /// <typeparam name="TResult">Specifies the return type of the UDF.</typeparam>
+        /// <param name="udf">The UDF function implementation.</param>
+        /// <param name="returnType"></param>
+        /// <returns>
+        /// A delegate that returns a <see cref="Column"/> for the result of the UDF.
+        /// </returns>
+        public static Func<Column, Column> UdfReturnRowType<T, TResult>(Func<T, TResult> udf, StructType returnType)
+        {
+            return CreateUdfReturnRowType<TResult>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply1;
+        }
+
+        /*public static Func<Column, Column> Udf<T, TResult>(Func<T, TResult> udf, StructType returnType)
+            where TResult : GenericRow
+        {
+            return CreateUdfReturnRowType<TResult>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply1;
+        }*/
+
+        public static Func<Column, Column> Udf<T>(Func<T, GenericRow> udf, StructType returnType)
+        {
+            return CreateUdfReturnRowType<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply1;
+        }
+
         /// <summary>Creates a UDF from the specified delegate.</summary>
         /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
         /// <typeparam name="T2">Specifies the type of the second argument to the UDF.</typeparam>
@@ -3650,6 +3676,8 @@ namespace Microsoft.Spark.Sql
         {
             return CreateUdf<TResult>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf)).Apply2;
         }
+
+        
 
         /// <summary>Creates a UDF from the specified delegate.</summary>
         /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
@@ -4071,6 +4099,11 @@ namespace Microsoft.Spark.Sql
             return CreateUdf<TResult>(name, execute, UdfUtils.PythonEvalType.SQL_BATCHED_UDF);
         }
 
+        private static UserDefinedFunction CreateUdfReturnRowType<TResult>(string name, Delegate execute, StructType returnType)
+        {
+            return CreateUdfReturnRowType<TResult>(name, execute, returnType, UdfUtils.PythonEvalType.SQL_BATCHED_UDF);
+        }
+
         private static UserDefinedFunction CreateVectorUdf<TResult>(string name, Delegate execute)
         {
             return CreateUdf<TResult>(name, execute, UdfUtils.PythonEvalType.SQL_SCALAR_PANDAS_UDF);
@@ -4089,6 +4122,22 @@ namespace Microsoft.Spark.Sql
                     CommandSerDe.SerializedMode.Row),
                 evalType,
                 UdfUtils.GetReturnType(typeof(TResult)));
+        }
+
+        private static UserDefinedFunction CreateUdfReturnRowType<TResult>(
+            string name,
+            Delegate execute,
+            StructType returnType,
+            UdfUtils.PythonEvalType evalType)
+        {
+            return UserDefinedFunction.Create(
+                name,
+                CommandSerDe.Serialize(
+                    execute,
+                    CommandSerDe.SerializedMode.Row,
+                    CommandSerDe.SerializedMode.Row),
+                evalType,
+                returnType.Json);
         }
 
         private static Column ApplyFunction(string funcName)
