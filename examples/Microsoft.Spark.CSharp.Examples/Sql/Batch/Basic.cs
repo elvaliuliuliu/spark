@@ -37,16 +37,16 @@ namespace Microsoft.Spark.Examples.Sql.Batch
                 {
                     new StructField("id", new IntegerType())
                 });
-            Func<Column, Column> udfReturnRowTypeTest2 = Udf<int>(
+            Func<Column, Column> udf = Udf<int>(
                 r => new GenericRow(new object[] { r + 100 }), schema);
 
 
-            Func<Column, Column> udfReturnRowTypeTest3 = Udf<int, int[]>(
-                r => new int[]{ r, r });
+            /*Func<Column, Column> udfReturnRowTypeTest3 = Udf<int, int[]>(
+                r => new int[]{ r, r });*/
 
-            Console.WriteLine("This is breaking test method-------------------------------------------------------");
+            Console.WriteLine("This is test method-------------------------------------------------------");
 
-            var udfDf = df.Select(udfReturnRowTypeTest2(df["id"]).As("udf_col"));
+            var udfDf = df.Select(udf(df["id"]).As("udf_col"));
 
             udfDf.PrintSchema();
             Console.WriteLine("This is after printing schema --------------------------------------");
