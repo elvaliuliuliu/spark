@@ -166,7 +166,7 @@ namespace Microsoft.Spark.E2ETest.UdfTests
             // at Microsoft.Spark.Sql.Functions.CreateUdf[TResult](String name, Delegate execute, PythonEvalType evalType) in Microsoft.Spark\Sql\Functions.cs:line 4053
             // at Microsoft.Spark.Sql.Functions.CreateUdf[TResult](String name, Delegate execute) in Microsoft.Spark\Sql\Functions.cs:line 4040
             // at Microsoft.Spark.Sql.Functions.Udf[T, TResult](Func`2 udf) in Microsoft.Spark\Sql\Functions.cs:line 3607
-            Assert.Throws<ArgumentException>(() => Udf<string, Row>(
+            /*Assert.Throws<ArgumentException>(() => Udf<string, Row>(
                 (str) =>
                 {
                     var structFields = new List<StructField>()
@@ -176,7 +176,17 @@ namespace Microsoft.Spark.E2ETest.UdfTests
                     var schema = new StructType(structFields);
                     var row = new Row(new object[] { str }, schema);
                     return row;
-                }));
+                }));*/
+            var schema = new StructType(new[]
+            {
+                new StructField("age", new IntegerType())
+            });
+            Func<Column, Column> udf = Udf<int>(
+                r => new GenericRow(new object[] { r + 100 }), schema);
+
+            var udfDf = _df.Select(udf(_df["age"]).As("udf_col"));
+            udfDf.PrintSchema();
+            udfDf.Show();
         }
     }
 }
