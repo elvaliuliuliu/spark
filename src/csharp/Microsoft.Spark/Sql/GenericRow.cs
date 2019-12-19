@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Spark.Sql.Types;
 
 namespace Microsoft.Spark.Sql
 {
@@ -91,31 +90,14 @@ namespace Microsoft.Spark.Sql
         /// </summary>
         /// <param name="obj">Other object to compare against</param>
         /// <returns>True if the other object is equal.</returns>
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj is GenericRow otherRow)
-            {
-                return Values.SequenceEqual(otherRow.Values);
-            }
-
-            return false;
-        }
+        public override bool Equals(object obj) =>
+            ReferenceEquals(this, obj) ||
+            ((obj is GenericRow row) && Values.SequenceEqual(row.Values));
 
         /// <summary>
         /// Returns the hash code of the current object.
         /// </summary>
         /// <returns>The hash code of the current object</returns>
         public override int GetHashCode() => base.GetHashCode();
-
     }
 }

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Spark.Sql;
 using Microsoft.Spark.Sql.Types;
@@ -24,35 +25,69 @@ namespace Microsoft.Spark.Examples.Sql.Batch
                 Environment.Exit(1);
             }
 
+
             var spark = SparkSession.Builder().GetOrCreate();
             var df = spark.Range(0, 5);
 
-            /*Func<Column, Column> udfReturnRowTypeTest = UdfReturnRowType<int, object[]>(
-                r => new object[] { r + 100 },
-                new StructType(new[]
-                {
-                    new StructField("id", new IntegerType())
-                }));*/
             var schema = new StructType(new[]
                 {
-                    new StructField("id", new IntegerType())
+                    new StructField("id", new StringType())
                 });
             Func<Column, Column> udf = Udf<int>(
                 r => new GenericRow(new object[] { r + 100 }), schema);
 
+            
+            Func<Column, Column> workingudf = Udf<int, int>(
+                r => r + 100);
 
-            /*Func<Column, Column> udfReturnRowTypeTest3 = Udf<int, int[]>(
-                r => new int[]{ r, r });*/
+            Func<Column, Column> udfarray = Udf<int, int[]>(
+                r => new int[] { r, r });
 
-            Console.WriteLine("This is test method-------------------------------------------------------");
 
+            
+
+            /*Console.WriteLine("This is testing return string working --------------------------------------");
+            var udfDf2 = df.Select(workingudf(df["id"]).As("udf_col2"));
+            udfDf2.PrintSchema();
+            udfDf2.Show();*/
+
+            /*Console.WriteLine("This is testing taking row type --------------------------------------");
+            Func<Column, Column> udfRow = Udf<Row, string>(
+                (row) =>
+                {
+                    string city = row.GetAs<string>("city");
+                    string state = row.GetAs<string>("state");
+                    return $"{city},{state}";
+                });
+            var udfDf3 = df.Select(udfRow(df["info"]).As("udf_col"));
+            udfDf3.PrintSchema();
+            udfDf3.Show();*/
+
+
+            /*Console.WriteLine("This is testing return object udf-------------------------------------------------------");
+            var udfDf3 = df.Select(udfobject(df["id"]).As("udf_col"));
+            udfDf3.PrintSchema();
+            udfDf3.Show();*/
+
+            /*Console.WriteLine("This is testing return array udf-------------------------------------------------------");
+            var udfDf4 = df.Select(udfarray(df["id"]).As("udf_col"));
+            udfDf4.PrintSchema();
+            udfDf4.Show();*/
+
+            Console.WriteLine("This is testing return row udf-------------------------------------------------------");
             var udfDf = df.Select(udf(df["id"]).As("udf_col"));
-
             udfDf.PrintSchema();
-            Console.WriteLine("This is after printing schema --------------------------------------");
             udfDf.Show();
+
+
             // udfDf.Select("udf_col.*").Show();
-            udfDf.Select(udfDf["udf_col.col1"], udfDf["udf_col.col2"]).Show();
+            // udfDf.Select(udfDf["udf_col.col1"], udfDf["udf_col.col2"]).Show();
+
+
+
+            spark.Stop();
+
+            
 
             /*SparkSession spark = SparkSession
                 .Builder()
@@ -106,7 +141,7 @@ namespace Microsoft.Spark.Examples.Sql.Batch
             sqlDf = spark.Sql("SELECT my_udf(*) FROM people");
             sqlDf.Show();
 
-            // Using UDF via data frames.
+            // c
             Func<Column, Column, Column> addition =
                 Udf<string, Row> ((str) => new GenericRow(new object[] {1}));
             df.Select(addition(df["age"], df["name"])).Show();
@@ -140,6 +175,10 @@ namespace Microsoft.Spark.Examples.Sql.Batch
             joinedDf3.Show();
 
             spark.Stop();*/
+        }
+        private static int Counter(ArrayList all_emails)
+        {
+            return all_emails.Count;
         }
     }
 }

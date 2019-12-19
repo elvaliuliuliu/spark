@@ -282,6 +282,8 @@ namespace Microsoft.Spark.Utils
 
         private static Delegate CreateUdfWrapperDelegate<T>(Type type, object[] parameters)
         {
+            Console.WriteLine("--------------------------This is debug--------------------");
+            Console.WriteLine($"hello {type}");
             BindingFlags bindingFlags = BindingFlags.Instance |
                 BindingFlags.Static |
                 BindingFlags.NonPublic |

@@ -13,6 +13,7 @@ namespace Microsoft.Spark.Worker
         {
             var sparkVersion = new Version(
                 Environment.GetEnvironmentVariable("DOTNET_WORKER_SPARK_VERSION"));
+                // Environment.GetEnvironmentVariable("2.4.1"));
 
             // Note that for the daemon server, standard output is used to communicate
             // port number. Thus, use error output until the communication is complete.

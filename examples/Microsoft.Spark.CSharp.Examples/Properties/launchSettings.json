@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Microsoft.Spark.CSharp.Examples": {
+      "commandName": "Project",
+      "commandLineArgs": "Sql.Batch.Basic dummy"
+    }
+  }
+}
