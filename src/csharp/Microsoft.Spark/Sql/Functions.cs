@@ -3639,30 +3639,6 @@ namespace Microsoft.Spark.Sql
             return CreateUdf<TResult>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf)).Apply1;
         }
 
-        // This is the change I made!!!
-        /// <summary>Creates a UDF from the specified delegate.</summary>
-        /// <typeparam name="T">Specifies the type of the first argument to the UDF.</typeparam>
-        /// <param name="udf">The UDF function implementation.</param>
-        /// <param name="returnType"></param>
-        /// <returns>
-        /// A delegate that returns a <see cref="Column"/> for the result of the UDF.
-        /// </returns>
-        public static Func<Column, Column> Udf<T>(Func<T, GenericRow> udf, StructType returnType)
-        {
-            return CreateUdf<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply1;
-        }
-
-        /*public static Func<Column, Column> Udf<T, TResult>(Func<T, TResult> udf, StructType returnType)
-            where TResult : GenericRow
-        {
-            return CreateUdfReturnRowType<TResult>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply1;
-        }*/
-
-        /*public static Func<Column, Column> Udf<T>(Func<T, GenericRow> udf, StructType returnType)
-        {
-            return CreateUdfReturnRowType<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply1;
-        }*/
-
         /// <summary>Creates a UDF from the specified delegate.</summary>
         /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
         /// <typeparam name="T2">Specifies the type of the second argument to the UDF.</typeparam>
@@ -3675,8 +3651,6 @@ namespace Microsoft.Spark.Sql
         {
             return CreateUdf<TResult>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf)).Apply2;
         }
-
-        
 
         /// <summary>Creates a UDF from the specified delegate.</summary>
         /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
@@ -3822,6 +3796,188 @@ namespace Microsoft.Spark.Sql
             Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> udf)
         {
             return CreateUdf<TResult>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf)).Apply10;
+        }
+
+        /// <summary>Creates a UDF from the specified delegate.</summary>
+        /// <param name="udf">The UDF function implementation.</param>
+        /// <param name="returnType">Schema associated with this row</param>
+        /// <returns>
+        /// A delegate that returns a <see cref="Column"/> for the result of the UDF.
+        /// </returns>
+        public static Func<Column> Udf(Func<GenericRow> udf, StructType returnType)
+        {
+            return CreateUdf<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply0;
+        }
+
+        /// <summary>Creates a UDF from the specified delegate.</summary>
+        /// <typeparam name="T">Specifies the type of the first argument to the UDF.</typeparam>
+        /// <param name="udf">The UDF function implementation.</param>
+        /// <param name="returnType">Schema associated with this row</param>
+        /// <returns>
+        /// A delegate that returns a <see cref="Column"/> for the result of the UDF.
+        /// </returns>
+        public static Func<Column, Column> Udf<T>(Func<T, GenericRow> udf, StructType returnType)
+        {
+            return CreateUdf<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply1;
+        }
+
+        /// <summary>Creates a UDF from the specified delegate.</summary>
+        /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
+        /// <typeparam name="T2">Specifies the type of the second argument to the UDF.</typeparam>
+        /// <param name="udf">The UDF function implementation.</param>
+        /// <param name="returnType">Schema associated with this row</param>
+        /// <returns>
+        /// A delegate that returns a <see cref="Column"/> for the result of the UDF.
+        /// </returns>
+        public static Func<Column, Column, Column> Udf<T1, T2>(Func<T1, T2, GenericRow> udf, StructType returnType)
+        {
+            return CreateUdf<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply2;
+        }
+
+        /// <summary>Creates a UDF from the specified delegate.</summary>
+        /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
+        /// <typeparam name="T2">Specifies the type of the second argument to the UDF.</typeparam>
+        /// <typeparam name="T3">Specifies the type of the third argument to the UDF.</typeparam>
+        /// <param name="udf">The UDF function implementation.</param>
+        /// <param name="returnType">Schema associated with this row</param>
+        /// <returns>
+        /// A delegate that returns a <see cref="Column"/> for the result of the UDF.
+        /// </returns>
+        public static Func<Column, Column, Column, Column> Udf<T1, T2, T3>(
+            Func<T1, T2, T3, GenericRow> udf, StructType returnType)
+        {
+            return CreateUdf<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply3;
+        }
+
+        /// <summary>Creates a UDF from the specified delegate.</summary>
+        /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
+        /// <typeparam name="T2">Specifies the type of the second argument to the UDF.</typeparam>
+        /// <typeparam name="T3">Specifies the type of the third argument to the UDF.</typeparam>
+        /// <typeparam name="T4">Specifies the type of the fourth argument to the UDF.</typeparam>
+        /// <param name="udf">The UDF function implementation.</param>
+        /// <param name="returnType">Schema associated with this row</param>
+        /// <returns>
+        /// A delegate that returns a <see cref="Column"/> for the result of the UDF.
+        /// </returns>
+        public static Func<Column, Column, Column, Column, Column> Udf<T1, T2, T3, T4>(
+            Func<T1, T2, T3, T4, GenericRow> udf, StructType returnType)
+        {
+            return CreateUdf<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply4;
+        }
+
+        /// <summary>Creates a UDF from the specified delegate.</summary>
+        /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
+        /// <typeparam name="T2">Specifies the type of the second argument to the UDF.</typeparam>
+        /// <typeparam name="T3">Specifies the type of the third argument to the UDF.</typeparam>
+        /// <typeparam name="T4">Specifies the type of the fourth argument to the UDF.</typeparam>
+        /// <typeparam name="T5">Specifies the type of the fifth argument to the UDF.</typeparam>
+        /// <param name="udf">The UDF function implementation.</param>
+        /// <param name="returnType">Schema associated with this row</param>
+        /// <returns>
+        /// A delegate that returns a <see cref="Column"/> for the result of the UDF.
+        /// </returns>
+        public static Func<Column, Column, Column, Column, Column, Column> Udf<T1, T2, T3, T4, T5>(
+            Func<T1, T2, T3, T4, T5, GenericRow> udf, StructType returnType)
+        {
+            return CreateUdf<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply5;
+        }
+
+        /// <summary>Creates a UDF from the specified delegate.</summary>
+        /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
+        /// <typeparam name="T2">Specifies the type of the second argument to the UDF.</typeparam>
+        /// <typeparam name="T3">Specifies the type of the third argument to the UDF.</typeparam>
+        /// <typeparam name="T4">Specifies the type of the fourth argument to the UDF.</typeparam>
+        /// <typeparam name="T5">Specifies the type of the fifth argument to the UDF.</typeparam>
+        /// <typeparam name="T6">Specifies the type of the sixth argument to the UDF.</typeparam>
+        /// <param name="udf">The UDF function implementation.</param>
+        /// <param name="returnType">Schema associated with this row</param>
+        /// <returns>
+        /// A delegate that returns a <see cref="Column"/> for the result of the UDF.
+        /// </returns>
+        public static Func<Column, Column, Column, Column, Column, Column, Column> Udf<T1, T2, T3, T4, T5, T6>(
+            Func<T1, T2, T3, T4, T5, T6, GenericRow> udf, StructType returnType)
+        {
+            return CreateUdf<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply6;
+        }
+
+        /// <summary>Creates a UDF from the specified delegate.</summary>
+        /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
+        /// <typeparam name="T2">Specifies the type of the second argument to the UDF.</typeparam>
+        /// <typeparam name="T3">Specifies the type of the third argument to the UDF.</typeparam>
+        /// <typeparam name="T4">Specifies the type of the fourth argument to the UDF.</typeparam>
+        /// <typeparam name="T5">Specifies the type of the fifth argument to the UDF.</typeparam>
+        /// <typeparam name="T6">Specifies the type of the sixth argument to the UDF.</typeparam>
+        /// <typeparam name="T7">Specifies the type of the seventh argument to the UDF.</typeparam>
+        /// <param name="udf">The UDF function implementation.</param>
+        /// <param name="returnType">Schema associated with this row</param>
+        /// <returns>
+        /// A delegate that returns a <see cref="Column"/> for the result of the UDF.
+        /// </returns>
+        public static Func<Column, Column, Column, Column, Column, Column, Column, Column> Udf<T1, T2, T3, T4, T5, T6, T7>(
+            Func<T1, T2, T3, T4, T5, T6, T7, GenericRow> udf, StructType returnType)
+        {
+            return CreateUdf<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply7;
+        }
+
+        /// <summary>Creates a UDF from the specified delegate.</summary>
+        /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
+        /// <typeparam name="T2">Specifies the type of the second argument to the UDF.</typeparam>
+        /// <typeparam name="T3">Specifies the type of the third argument to the UDF.</typeparam>
+        /// <typeparam name="T4">Specifies the type of the fourth argument to the UDF.</typeparam>
+        /// <typeparam name="T5">Specifies the type of the fifth argument to the UDF.</typeparam>
+        /// <typeparam name="T6">Specifies the type of the sixth argument to the UDF.</typeparam>
+        /// <typeparam name="T7">Specifies the type of the seventh argument to the UDF.</typeparam>
+        /// <typeparam name="T8">Specifies the type of the eighth argument to the UDF.</typeparam>
+        /// <param name="udf">The UDF function implementation.</param>
+        /// <param name="returnType">Schema associated with this row</param>
+        /// <returns>
+        /// A delegate that returns a <see cref="Column"/> for the result of the UDF.
+        /// </returns>
+        public static Func<Column, Column, Column, Column, Column, Column, Column, Column, Column> Udf<T1, T2, T3, T4, T5, T6, T7, T8>(
+            Func<T1, T2, T3, T4, T5, T6, T7, T8, GenericRow> udf, StructType returnType)
+        {
+            return CreateUdf<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply8;
+        }
+
+        /// <summary>Creates a UDF from the specified delegate.</summary>
+        /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
+        /// <typeparam name="T2">Specifies the type of the second argument to the UDF.</typeparam>
+        /// <typeparam name="T3">Specifies the type of the third argument to the UDF.</typeparam>
+        /// <typeparam name="T4">Specifies the type of the fourth argument to the UDF.</typeparam>
+        /// <typeparam name="T5">Specifies the type of the fifth argument to the UDF.</typeparam>
+        /// <typeparam name="T6">Specifies the type of the sixth argument to the UDF.</typeparam>
+        /// <typeparam name="T7">Specifies the type of the seventh argument to the UDF.</typeparam>
+        /// <typeparam name="T8">Specifies the type of the eighth argument to the UDF.</typeparam>
+        /// <typeparam name="T9">Specifies the type of the ninth argument to the UDF.</typeparam>
+        /// <param name="udf">The UDF function implementation.</param>
+        /// <param name="returnType">Schema associated with this row</param>
+        /// <returns>A delegate that when invoked will return a <see cref="Column"/> for the result of the UDF.</returns>
+        public static Func<Column, Column, Column, Column, Column, Column, Column, Column, Column, Column> Udf<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
+            Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, GenericRow> udf, StructType returnType)
+        {
+            return CreateUdf<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply9;
+        }
+
+        /// <summary>Creates a UDF from the specified delegate.</summary>
+        /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
+        /// <typeparam name="T2">Specifies the type of the second argument to the UDF.</typeparam>
+        /// <typeparam name="T3">Specifies the type of the third argument to the UDF.</typeparam>
+        /// <typeparam name="T4">Specifies the type of the fourth argument to the UDF.</typeparam>
+        /// <typeparam name="T5">Specifies the type of the fifth argument to the UDF.</typeparam>
+        /// <typeparam name="T6">Specifies the type of the sixth argument to the UDF.</typeparam>
+        /// <typeparam name="T7">Specifies the type of the seventh argument to the UDF.</typeparam>
+        /// <typeparam name="T8">Specifies the type of the eighth argument to the UDF.</typeparam>
+        /// <typeparam name="T9">Specifies the type of the ninth argument to the UDF.</typeparam>
+        /// <typeparam name="T10">Specifies the type of the tenth argument to the UDF.</typeparam>
+        /// <param name="udf">The UDF function implementation.</param>
+        /// <param name="returnType">Schema associated with this row</param>
+        /// <returns>
+        /// A delegate that returns a <see cref="Column"/> for the result of the UDF.
+        /// </returns>
+        public static Func<Column, Column, Column, Column, Column, Column, Column, Column, Column, Column, Column> Udf<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
+            Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, GenericRow> udf, StructType returnType)
+        {
+            return CreateUdf<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply10;
         }
 
         /// <summary>Creates a Vector UDF from the specified delegate.</summary>
@@ -4102,7 +4258,7 @@ namespace Microsoft.Spark.Sql
         {
             return CreateUdf<TResult>(name, execute, UdfUtils.PythonEvalType.SQL_BATCHED_UDF, returnType);
         }
-
+        
         private static UserDefinedFunction CreateVectorUdf<TResult>(string name, Delegate execute)
         {
             return CreateUdf<TResult>(name, execute, UdfUtils.PythonEvalType.SQL_SCALAR_PANDAS_UDF);
@@ -4121,24 +4277,8 @@ namespace Microsoft.Spark.Sql
                     CommandSerDe.SerializedMode.Row,
                     CommandSerDe.SerializedMode.Row),
                 evalType,
-                returnType == null ? UdfUtils.GetReturnType(typeof(TResult)) : returnType.Json);
+                returnType.Json ?? UdfUtils.GetReturnType(typeof(TResult)));
         }
-
-        /*private static UserDefinedFunction CreateUdfReturnRowType<TResult>(
-            string name,
-            Delegate execute,
-            UdfUtils.PythonEvalType evalType,
-            StructType returnType)
-        {
-            return UserDefinedFunction.Create(
-                name,
-                CommandSerDe.Serialize(
-                    execute,
-                    CommandSerDe.SerializedMode.Row,
-                    CommandSerDe.SerializedMode.Row),
-                evalType,
-                returnType.Json);
-        }*/
 
         private static Column ApplyFunction(string funcName)
         {
