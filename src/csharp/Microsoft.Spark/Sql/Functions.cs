@@ -4267,8 +4267,7 @@ namespace Microsoft.Spark.Sql
         private static UserDefinedFunction CreateUdf<TResult>(
             string name,
             Delegate execute,
-            UdfUtils.PythonEvalType evalType,
-            StructType returnType = null)
+            UdfUtils.PythonEvalType evalType)
         {
             return UserDefinedFunction.Create(
                 name,
@@ -4277,7 +4276,23 @@ namespace Microsoft.Spark.Sql
                     CommandSerDe.SerializedMode.Row,
                     CommandSerDe.SerializedMode.Row),
                 evalType,
-                returnType.Json ?? UdfUtils.GetReturnType(typeof(TResult)));
+                UdfUtils.GetReturnType(typeof(TResult)));
+        }
+
+        private static UserDefinedFunction CreateUdf<TResult>(
+            string name,
+            Delegate execute,
+            UdfUtils.PythonEvalType evalType,
+            StructType returnType)
+        {
+            return UserDefinedFunction.Create(
+                name,
+                CommandSerDe.Serialize(
+                    execute,
+                    CommandSerDe.SerializedMode.Row,
+                    CommandSerDe.SerializedMode.Row),
+                evalType,
+                returnType.Json);
         }
 
         private static Column ApplyFunction(string funcName)
