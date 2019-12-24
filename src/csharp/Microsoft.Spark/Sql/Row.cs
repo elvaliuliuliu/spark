@@ -21,7 +21,7 @@ namespace Microsoft.Spark.Sql
         /// </summary>
         /// <param name="values">Column values for a row</param>
         /// <param name="schema">Schema associated with a row</param>
-        internal Row(object[] values, StructType schema)
+        public Row(object[] values, StructType schema)
         {
             _genericRow = new GenericRow(values);
             Schema = schema;

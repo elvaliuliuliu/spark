@@ -3821,6 +3821,11 @@ namespace Microsoft.Spark.Sql
             return CreateUdf<GenericRow>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply1;
         }
 
+        public static Func<Column, Column> Udf<T>(Func<T, Row> udf, StructType returnType)
+        {
+            return CreateUdf<Row>(udf.Method.ToString(), UdfUtils.CreateUdfWrapper(udf), returnType).Apply1;
+        }
+
         /// <summary>Creates a UDF from the specified delegate.</summary>
         /// <typeparam name="T1">Specifies the type of the first argument to the UDF.</typeparam>
         /// <typeparam name="T2">Specifies the type of the second argument to the UDF.</typeparam>

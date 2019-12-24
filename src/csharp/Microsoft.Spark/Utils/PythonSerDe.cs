@@ -24,8 +24,8 @@ namespace Microsoft.Spark.Utils
         // this object. However there is no issue as the field(s) that are
         // reused by this object are instantiated on a per-thread basis and
         // therefore not shared between threads.
-        private static readonly RowConstructor s_rowConstructor;
-
+        // private static readonly RowConstructor s_rowConstructor;
+        private static readonly GenericRowConstructor s_genericRow;
         static PythonSerDe()
         {
             // Custom picklers used in PySpark implementation.
@@ -33,9 +33,11 @@ namespace Microsoft.Spark.Utils
             Unpickler.registerConstructor(
                 "pyspark.sql.types", "_parse_datatype_json_string", new StringConstructor());
 
-            s_rowConstructor = new RowConstructor();
+            // s_rowConstructor = new RowConstructor();
+            s_genericRow = new GenericRowConstructor();
+            Console.WriteLine("----------------------Use Unpickler---------------------");
             Unpickler.registerConstructor(
-                "pyspark.sql.types", "_create_row_inbound_converter", s_rowConstructor);
+                "pyspark.sql.types", "_create_row_inbound_converter", s_genericRow);
         }
 
         /// <summary>
@@ -46,6 +48,7 @@ namespace Microsoft.Spark.Utils
         /// <returns>Unpicked objects</returns>
         internal static object[] GetUnpickledObjects(Stream stream, int messageLength)
         {
+            Console.WriteLine("--------------------this is pickle--------------------------");
             byte[] buffer = ArrayPool<byte>.Shared.Rent(messageLength);
 
             try
@@ -59,7 +62,7 @@ namespace Microsoft.Spark.Utils
                 object unpickledItems = unpickler.loads(
                     new ReadOnlyMemory<byte>(buffer, 0, messageLength),
                     stackCapacity: 102); // Spark sends batches of 100 rows, and +2 is for markers.
-                s_rowConstructor.Reset();
+                s_genericRow.Reset();
                 Debug.Assert(unpickledItems != null);
                 return (unpickledItems as object[]);
             }
