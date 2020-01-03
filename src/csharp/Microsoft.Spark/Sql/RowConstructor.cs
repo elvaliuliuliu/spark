@@ -104,7 +104,7 @@ namespace Microsoft.Spark.Sql
             // entry in row1.
             for (int i = 0; i < _args.Length; ++i)
             {
-                if (_args[i] is GenericRowConstructor rowConstructor)
+                if (_args[i] is RowConstructor rowConstructor)
                 {
                     _args[i] = rowConstructor.GetRow();
                 }
