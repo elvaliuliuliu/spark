@@ -25,7 +25,17 @@ dotnet publish -f netcoreapp3.1 -r ubuntu.16.04-x64
 
 - Produce <your application>.zip for the published files
 ```
+cd <your application folder>\bin\Debug\netcoreapp3.1\ubuntu.16.04-x64\publish
+```
+
+Run the following command to zip up the published files on **Linux**:
+```
 zip -r <your application>.zip
+```
+
+Run the following commands to zip up the published files on **Windows**:
+```
+7z a <your application>.zip
 ```
 
 Now you are ready to submit your application via Azure CLI Synapse Tool!
