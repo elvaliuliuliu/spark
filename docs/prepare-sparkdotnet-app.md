@@ -34,10 +34,10 @@ zip -r <your application>.zip
 ```
 
 Run the following commands to zip up the published files on **Windows**:
+
+In order to use the following commands, please remember to [set up environmnet variable for 7-Zip](https://stackoverflow.com/questions/14122732/unzip-files-7-zip-via-cmd-command) or you can manually right-click the folder -> send to zip.
 ```
 7z a <your application>.zip
 ```
 
 Now you are ready to submit your application via Azure CLI Synapse Tool!
-
-
